@@ -19,8 +19,12 @@
 
     private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        // Reinitialize Preline after navigation
+        // Reinitialize Preline after navigation (similar to Livewire's livewire:navigated)
         await Task.Delay(100); // Small delay to ensure DOM is updated
+        await InitializePreline();
+
+        // Additional attempt after a longer delay to ensure DOM is fully updated
+        await Task.Delay(100);
         await InitializePreline();
     }
 
@@ -28,7 +32,9 @@
     {
         try
         {
+            Console.WriteLine("PrelineNavigationHandler: Initializing Preline components...");
             await JSRuntime.InvokeVoidAsync("initializePreline");
+            Console.WriteLine("PrelineNavigationHandler: Preline initialization completed");
         }
         catch (Exception ex)
         {
