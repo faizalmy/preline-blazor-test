@@ -9,9 +9,6 @@
     {
         if (firstRender)
         {
-            // Initialize Preline on first render
-            await InitializePreline();
-
             // Subscribe to navigation events
             Navigation.LocationChanged += OnLocationChanged;
         }
@@ -19,27 +16,9 @@
 
     private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        // Reinitialize Preline after navigation (similar to Livewire's livewire:navigated)
-        await Task.Delay(100); // Small delay to ensure DOM is updated
-        await InitializePreline();
-
-        // Additional attempt after a longer delay to ensure DOM is fully updated
+        // Simple re-initialization after navigation
         await Task.Delay(100);
-        await InitializePreline();
-    }
-
-    private async Task InitializePreline()
-    {
-        try
-        {
-            Console.WriteLine("PrelineNavigationHandler: Initializing Preline components...");
-            await JSRuntime.InvokeVoidAsync("initializePreline");
-            Console.WriteLine("PrelineNavigationHandler: Preline initialization completed");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error initializing Preline: {ex.Message}");
-        }
+        await JSRuntime.InvokeVoidAsync("initializePreline");
     }
 
     public async ValueTask DisposeAsync()

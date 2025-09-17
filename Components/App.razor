@@ -21,60 +21,33 @@
         // Initialize Preline components
         function initializePreline() {
             if (window.HSStaticMethods) {
-                console.log('Initializing Preline components...');
                 window.HSStaticMethods.autoInit();
-                console.log('Preline initialization complete');
-            } else {
-                console.error('HSStaticMethods not available - Preline JavaScript may not have loaded');
             }
         }
 
-        // Initialize on DOM ready
+        // Initialize on DOM ready and watch for changes
         document.addEventListener('DOMContentLoaded', function() {
             initializePreline();
-        });
 
-        // Listen for Blazor navigation events (similar to Livewire's livewire:navigated)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Listen for Blazor's navigation events
-            window.addEventListener('popstate', function() {
-                // Re-initialize after browser back/forward navigation
-                setTimeout(() => {
-                    initializePreline();
-                }, 100);
-            });
-
-            // Listen for Blazor's internal navigation events
-            // This covers programmatic navigation within the SPA
-            const observer = new MutationObserver(function(mutations) {
+            // Watch for new Preline components globally
+            new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
                     if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                        // Check if any added nodes contain Preline components
                         mutation.addedNodes.forEach(function(node) {
-                            if (node.nodeType === 1) { // Element node
-                                if (node.querySelector && (
-                                    node.querySelector('[data-hs-dropdown]') ||
-                                    node.querySelector('[data-hs-modal]') ||
-                                    node.querySelector('[data-hs-accordion]') ||
-                                    node.querySelector('.hs-dropdown') ||
-                                    node.querySelector('.hs-modal') ||
-                                    node.querySelector('.hs-accordion')
-                                )) {
-                                    setTimeout(() => {
-                                        initializePreline();
-                                    }, 50);
-                                }
+                            if (node.nodeType === 1 && node.querySelector && (
+                                node.querySelector('[data-hs-dropdown]') ||
+                                node.querySelector('.hs-dropdown') ||
+                                node.querySelector('[data-hs-modal]') ||
+                                node.querySelector('.hs-modal') ||
+                                node.querySelector('[data-hs-accordion]') ||
+                                node.querySelector('.hs-accordion')
+                            )) {
+                                setTimeout(initializePreline, 50);
                             }
                         });
                     }
                 });
-            });
-
-            // Start observing the document body for changes
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
+            }).observe(document.body, { childList: true, subtree: true });
         });
 
         // Make function globally available for Blazor
