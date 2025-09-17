@@ -9,5 +9,9 @@ echo ""
 # Navigate to project directory
 cd "$(dirname "$0")"
 
+# Build CSS with Tailwind
+echo "Building CSS with Tailwind..."
+npm run build-css
+
 # Run the application
 dotnet run

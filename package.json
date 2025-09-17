@@ -1,0 +1,17 @@
+{
+  "name": "preline-blazor-test",
+  "version": "1.0.0",
+  "description": "Blazor test project with Tailwind CSS",
+  "scripts": {
+    "build-css": "npx @tailwindcss/cli -i ./src/input.css -o ./wwwroot/css/tailwind.css",
+    "watch-css": "npx @tailwindcss/cli -i ./src/input.css -o ./wwwroot/css/tailwind.css --watch",
+    "copy-preline": "cp node_modules/preline/dist/preline.js wwwroot/js/",
+    "dev": "npm run watch-css"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.13",
+    "@tailwindcss/forms": "^0.5.10",
+    "preline": "^3.2.3"
+  }
+}

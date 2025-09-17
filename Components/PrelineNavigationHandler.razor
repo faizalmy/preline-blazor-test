@@ -1,0 +1,44 @@
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize Preline on first render
+            await InitializePreline();
+
+            // Subscribe to navigation events
+            Navigation.LocationChanged += OnLocationChanged;
+        }
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // Reinitialize Preline after navigation
+        await Task.Delay(100); // Small delay to ensure DOM is updated
+        await InitializePreline();
+    }
+
+    private async Task InitializePreline()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("initializePreline");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error initializing Preline: {ex.Message}");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
+        await Task.CompletedTask;
+    }
+}
